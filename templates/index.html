@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wyszukiwanie w PDF</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div>
+                <label for="pdf_file">Wybierz plik PDF:</label>
+                <select id="pdf_file" name="pdf_file" required>
+                    <option value="" selected disabled>Wybierz plik...</option>
+                    {% for file in pdf_files %}
+                        <option value="{{ file }}">{{ file }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="search_term">Szukane słowo lub zdanie:</label>
+                <input type="text" id="search_term" name="search_term" required>
+            </div>
+            <button type="submit">Szukaj</button>
+        </form>
+        {% if pages %}
+            <h2>Wyniki wyszukiwania dla "{{ search_term }}" w pliku "{{ filename }}":</h2>
+            <ul>
+                {% for page_num, text in pages %}
+                    <li>
+                        <h3>Strona {{ page_num }}</h3>
+                        <div class="text-container">
+                            <pre>{{ highlight_text(text, search_term)|safe }}</pre>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
